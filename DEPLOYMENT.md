@@ -39,7 +39,7 @@ automatically create or mutate production tables.
 1. Confirm the latest project changes, including the PostgreSQL driver and schema file, have
    been pushed to the private repository.
 2. In Render, choose **New > Blueprint** and connect
-   [DigitalMarketingProject/LeadPulse-AI](https://github.com/DigitalMarketingProject/LeadPulse-AI).
+   [ShabarishR07/LeadPulse-AI](https://github.com/ShabarishR07/LeadPulse-AI).
 3. Render should detect `render.yaml` and configure a free Docker Web Service.
 4. Set all secret environment variables in Render's environment settings. Never put secrets in
    GitHub or `render.yaml`.
@@ -66,7 +66,21 @@ Render supplies `PORT` automatically. The Render Blueprint sets the driver and d
 settings. The admin password environment value must be a BCrypt hash, not the plaintext
 password.
 
-## 4. Check deployment logs
+## 4. Dashboard accounts
+
+- `LEADPULSE_ADMIN_USERNAME` and `LEADPULSE_ADMIN_PASSWORD_BCRYPT` seed the initial
+  administrator account. The user enters the original password on the sign-in page, not its hash.
+- The configured administrator username and BCrypt hash are synchronized at application startup.
+  Updating the hash in Render is the supported way to reset that administrator's password.
+- Users can request accounts at `/register`; new accounts cannot sign in until an administrator
+  approves them at `/admin/accounts`.
+- Dashboard pages use an in-app form login and session cookie. The production session expires
+  after 30 minutes of inactivity, and users can explicitly sign out.
+- Before deploying this account feature to an existing database, run the updated
+  `src/main/resources/db/production-schema-postgresql.sql` in Neon. Its `CREATE TABLE IF NOT EXISTS`
+  statements add the new account table without replacing existing tables or data.
+
+## 5. Check deployment logs
 
 If the service fails its startup or schema-validation check:
 
@@ -76,7 +90,7 @@ If the service fails its startup or schema-validation check:
 4. Review Render logs and share only the error text after removing hostnames, usernames,
    passwords, API keys, and tokens.
 
-## 5. Before using real data
+## 6. Before using real data
 
 - Use paid persistent compute and database tiers, and verify backup and restore procedures.
 - The production UI currently has one platform admin, not separate company users.

@@ -6,6 +6,15 @@ CREATE TABLE IF NOT EXISTS organizations (
     name VARCHAR(120) NOT NULL UNIQUE
 );
 
+CREATE TABLE IF NOT EXISTS dashboard_users (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(60) NOT NULL,
+    account_role VARCHAR(20) NOT NULL,
+    approved BOOLEAN NOT NULL,
+    created_at DATETIME(6) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS customers (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     company VARCHAR(255),

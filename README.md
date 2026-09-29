@@ -1,6 +1,5 @@
-# LeadPulse-AI
-A website for analyzing the CRO of the website
 # LeadPulse AI
+
 LeadPulse AI is a full-stack digital marketing application for managing leads, understanding customer engagement, and reviewing campaign performance. It combines a server-rendered web interface with REST APIs and a relational data layer.
 
 > **Project status:** Local development and automated tests are available. Render and Neon deployment configuration is included, but a live hosted deployment has not yet been verified.
@@ -15,6 +14,7 @@ LeadPulse AI is a full-stack digital marketing application for managing leads, u
 - Receive organization-associated tracking events and identify visitors when permitted.
 - Accept signed lead webhooks with timestamp validation and idempotency protection.
 - Rotate or revoke organization API keys.
+- Use individual dashboard accounts with administrator-approved registration.
 - Export or erase customer-related data through privacy endpoints.
 - Export reports in spreadsheet and PDF formats.
 
@@ -70,6 +70,9 @@ The test suite covers application startup, service behavior, lead scoring, priva
 - `/campaigns` — campaign management
 - `/reports` — report exports
 - `/integrations` — integration setup information
+- `/login` — dashboard sign-in
+- `/register` — request a dashboard account (administrator approval required)
+- `/admin/accounts` — administrator review of pending account requests
 
 Administrative pages and API access depend on the active Spring profile and security configuration.
 
@@ -97,10 +100,14 @@ Follow [DEPLOYMENT.md](DEPLOYMENT.md) for the deployment sequence and environmen
 ## Security and demo limitations
 
 - Do not expose organization API keys in public browser JavaScript. The current browser tracker is for local development; use server-to-server integration for testing.
-- The production application currently uses one configured platform administrator, not organization-specific user accounts and roles.
+- The first production administrator is seeded from Render environment variables. Public registrations remain pending until that administrator approves them; this is not yet a full organization-specific role-management system.
 - Rate limiting is in-memory and is not shared across multiple application instances.
 - Webhook signing currently uses the organization API key; a separate signing secret is a hardening item.
 - Free hosting and database plans may sleep, impose quotas, or lack production backup and availability guarantees. Do not use the demo configuration for important customer data.
 - Consent, privacy notices, retention, and applicable legal requirements must be addressed before collecting real visitor data.
 
 This project is a learning and demonstration system, not a production security certification.
+
+## Repository
+
+[ShabarishR07/LeadPulse-AI](https://github.com/ShabarishR07/LeadPulse-AI)

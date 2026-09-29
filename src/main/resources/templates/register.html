@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Request an account | LeadPulse AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<main class="container min-vh-100 d-flex align-items-center justify-content-center py-4">
+    <section class="card shadow-sm border-0" style="width: 100%; max-width: 460px;">
+        <div class="card-body p-4">
+            <h1 class="h3 mb-2">Request an account</h1>
+            <p class="text-muted">An administrator must approve your account before dashboard access is enabled.</p>
+
+            <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
+
+            <form th:action="@{/register}" th:object="${registration}" method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="username">Username</label>
+                    <input class="form-control" id="username" th:field="*{username}" autocomplete="username"
+                           minlength="3" maxlength="50" pattern="[A-Za-z0-9._-]{3,50}" required>
+                    <div class="form-text">3–50 letters, numbers, dots, underscores, or hyphens.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-control" id="password" type="password" th:field="*{password}"
+                           autocomplete="new-password" minlength="12" maxlength="72" required>
+                    <div class="form-text">Use at least 12 characters. Choose a unique password.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="confirmPassword">Confirm password</label>
+                    <input class="form-control" id="confirmPassword" type="password" th:field="*{confirmPassword}"
+                           autocomplete="new-password" minlength="12" maxlength="72" required>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Submit registration</button>
+            </form>
+            <p class="text-center mt-3 mb-0"><a th:href="@{/login}">Back to sign in</a></p>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Account approvals | LeadPulse AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<main class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 mb-1">Account approvals</h1>
+            <p class="text-muted mb-0">Approve account requests before they can access the dashboard.</p>
+        </div>
+        <a class="btn btn-outline-primary" th:href="@{/dashboard}">Back to dashboard</a>
+    </div>
+
+    <div class="alert alert-success" role="status" th:if="${param.approved}">
+        Account approved. The user can now sign in.
+    </div>
+
+    <section class="card shadow-sm">
+        <div class="card-body">
+            <p class="mb-0" th:if="${#lists.isEmpty(pendingUsers)}">There are no pending account requests.</p>
+            <div class="table-responsive" th:unless="${#lists.isEmpty(pendingUsers)}">
+                <table class="table align-middle mb-0">
+                    <thead>
+                    <tr><th>Username</th><th>Requested</th><th>Action</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${pendingUsers}">
+                        <td th:text="${user.username}">user</td>
+                        <td th:text="${user.createdAt}">date</td>
+                        <td>
+                            <form th:action="@{/admin/accounts/{id}/approve(id=${user.id})}" method="post">
+                                <button class="btn btn-success btn-sm" type="submit">Approve</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

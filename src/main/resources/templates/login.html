@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in | LeadPulse AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<main class="container min-vh-100 d-flex align-items-center justify-content-center">
+    <section class="card shadow-sm border-0" style="width: 100%; max-width: 420px;">
+        <div class="card-body p-4">
+            <h1 class="h3 mb-2">Sign in to LeadPulse AI</h1>
+            <p class="text-muted mb-4">Use your approved dashboard account.</p>
+
+            <div class="alert alert-success" role="status" th:if="${param.registered}">
+                Registration received. An administrator must approve your account before you can sign in.
+            </div>
+            <div class="alert alert-info" role="status" th:if="${param.logout}">
+                You have been signed out.
+            </div>
+            <div class="alert alert-danger" role="alert" th:if="${param.error}">
+                Sign-in failed. Check your credentials and confirm that your account has been approved.
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="username">Username</label>
+                    <input class="form-control" id="username" name="username" autocomplete="username"
+                           required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-control" id="password" name="password" type="password"
+                           autocomplete="current-password" required>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Sign in</button>
+            </form>
+            <p class="text-center mt-3 mb-0">
+                Need an account? <a th:href="@{/register}">Request access</a>
+            </p>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -6,15 +6,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.boot.ApplicationRunner;
+import com.marketing.leadscore.service.DashboardUserService;
 
 import java.util.Arrays;
 
@@ -32,7 +31,10 @@ public class ProductionSecurityConfig {
                         "/api/organizations/**",
                         "/api/privacy/**"))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                        .requestMatchers(
+                                "/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/favicon.ico")
+                        .permitAll()
+                        .requestMatchers("/admin/accounts/**").hasRole("ADMIN")
                         .requestMatchers(
                                 "/api/tracking/**",
                                 "/api/integrations/**",
@@ -41,7 +43,16 @@ public class ProductionSecurityConfig {
                                 "/api/privacy/**").permitAll()
                         .anyRequest().authenticated())
                 .cors(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults());
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/dashboard", false)
+                        .failureUrl("/login?error")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"))
+                .sessionManagement(session -> session.sessionFixation().migrateSession());
         return http.build();
     }
 
@@ -69,17 +80,10 @@ public class ProductionSecurityConfig {
     }
 
     @Bean
-    public UserDetailsService productionUserDetailsService(
+    public ApplicationRunner bootstrapAdministrator(
+            DashboardUserService userService,
             @Value("${leadpulse.admin.username}") String username,
-            @Value("${leadpulse.admin.password-bcrypt}") String passwordHash,
-            PasswordEncoder productionPasswordEncoder) {
-        if (username.isBlank() || !passwordHash.matches("^\\$2[aby]\\$.{56}$")) {
-            throw new IllegalStateException(
-                    "Production requires LEADPULSE_ADMIN_USERNAME and a BCrypt LEADPULSE_ADMIN_PASSWORD_BCRYPT.");
-        }
-        return new InMemoryUserDetailsManager(User.withUsername(username)
-                .password(passwordHash)
-                .roles("ADMIN")
-                .build());
+            @Value("${leadpulse.admin.password-bcrypt}") String passwordHash) {
+        return args -> userService.ensureAdministrator(username, passwordHash);
     }
 }

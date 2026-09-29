@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -46,10 +46,20 @@
         Integrations
     </a>
 
+    <a href="/admin/accounts" sec:authorize="hasRole('ADMIN')">
+        <i class="fa-solid fa-user-check"></i>
+        Account approvals
+    </a>
+
     <a href="/" class="mt-4">
         <i class="fa-solid fa-arrow-left"></i>
         Home Page
     </a>
+    <form th:action="@{/logout}" method="post" class="px-3 mt-3" sec:authorize="isAuthenticated()">
+        <button class="btn btn-outline-light btn-sm w-100" type="submit">
+            <i class="fa-solid fa-right-from-bracket me-1"></i>Sign out
+        </button>
+    </form>
 </div>
 
 <div class="content">
